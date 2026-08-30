@@ -756,7 +756,10 @@ def get_user_profile(user_id):
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": "User tidak ditemukan"}), 404
-    return jsonify({"user": user.to_dict()}), 200
+    has_recommendation = CareerRecommendation.query.filter_by(user_id=user.id).first() is not None
+    user_dict = user.to_dict()
+    user_dict['has_recommendation'] = has_recommendation
+    return jsonify({"user": user_dict, "has_recommendation": has_recommendation}), 200
 
 
 @app.route('/api/user/<int:user_id>', methods=['PUT'])

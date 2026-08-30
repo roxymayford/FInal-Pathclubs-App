@@ -7,7 +7,7 @@ import { Sparkles, Plus, X, AlertCircle, ChevronRight, Briefcase, ChevronRightSq
 const FLASK_API = import.meta.env.VITE_ML_API_URL || 'http://localhost:5000/api';
 
 export default function Rekomendasi() {
-  const { user, dashboardData } = useAuth();
+  const { user, dashboardData, setHasRecommendation } = useAuth();
   
   // Data states
   const [availableSkills, setAvailableSkills] = useState([]);
@@ -127,6 +127,15 @@ export default function Rekomendasi() {
           });
         } catch (_) {}
       }
+      localStorage.setItem('has_recommendation', 'true');
+      localStorage.setItem('career_recommendation', JSON.stringify({
+        top_career: data.prediction,
+        skills: selectedSkills,
+        interests: selectedInterests,
+        probabilities: data.probabilities,
+        saved_at: new Date().toISOString()
+      }));
+      if (setHasRecommendation) setHasRecommendation(true);
     } catch (err) {
       setError(err.message || 'Unable to connect to the recommendation engine.');
     } finally {

@@ -9,6 +9,7 @@ const LARAVEL_API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/
 export const AuthProvider = ({ children }) => {
   const [user, setUser]               = useState(null);
   const [dashboardData, setDashboardData] = useState(initialDashboardData);
+  const [hasRecommendation, setHasRecommendation] = useState(() => localStorage.getItem('has_recommendation') === 'true');
   const [isLoading, setIsLoading]     = useState(true);
   const saveTimeoutRef                = useRef(null);
 
@@ -170,7 +171,24 @@ export const AuthProvider = ({ children }) => {
             } catch (fetchErr) {
               console.warn('Could not fetch backend progress, using cached data:', fetchErr);
             }
+          if (activeUserId) {
+            try {
+              const recRes = await fetch(`${FLASK_API}/recommendation/${activeUserId}`);
+              if (recRes.ok) {
+                const recJson = await recRes.json();
+                if (recJson.recommendation && recJson.recommendation.top_career) {
+                  setHasRecommendation(true);
+                  localStorage.setItem('has_recommendation', 'true');
+                  userData.has_recommendation = true;
+                } else {
+                  setHasRecommendation(false);
+                  localStorage.removeItem('has_recommendation');
+                  userData.has_recommendation = false;
+                }
+              }
+            } catch (_) {}
           }
+
           handleSetDashboardData(newData);
           setIsLoading(false);
           return;
@@ -245,6 +263,14 @@ export const AuthProvider = ({ children }) => {
         newData.notifications    = progress.notifications || [];
       }
 
+      const hasRec = Boolean(resData.has_recommendation);
+      setHasRecommendation(hasRec);
+      if (hasRec) {
+        localStorage.setItem('has_recommendation', 'true');
+      } else {
+        localStorage.removeItem('has_recommendation');
+      }
+
       handleSetDashboardData(newData);
       setIsLoading(false);
 
@@ -252,7 +278,7 @@ export const AuthProvider = ({ children }) => {
         success: true,
         user: dbUser,
         is_new_user: resData.is_new_user,
-        has_recommendation: resData.has_recommendation,
+        has_recommendation: hasRec,
         user_id: dbUser.id
       };
     } catch (err) {
@@ -308,13 +334,22 @@ export const AuthProvider = ({ children }) => {
         newData.notifications    = progress.notifications || [];
       }
 
+      const hasRec = Boolean(has_recommendation);
+      setHasRecommendation(hasRec);
+      if (hasRec) {
+        localStorage.setItem('has_recommendation', 'true');
+      } else {
+        localStorage.removeItem('has_recommendation');
+        localStorage.removeItem('career_recommendation');
+      }
+
       handleSetDashboardData(newData);
       setIsLoading(false);
 
       return {
         success:            true,
         is_new_user,
-        has_recommendation,
+        has_recommendation: hasRec,
         user_id:            googleUser.id,
       };
     } catch (err) {
@@ -350,6 +385,15 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('googleUser', JSON.stringify(googleUser));
       localStorage.setItem('user_id', String(googleUser.id));
 
+      const hasRec = Boolean(has_recommendation);
+      setHasRecommendation(hasRec);
+      if (hasRec) {
+        localStorage.setItem('has_recommendation', 'true');
+      } else {
+        localStorage.removeItem('has_recommendation');
+        localStorage.removeItem('career_recommendation');
+      }
+
       setUser({
         ...googleUser,
         isGoogle: true,
@@ -379,7 +423,7 @@ export const AuthProvider = ({ children }) => {
       return {
         success:            true,
         is_new_user,
-        has_recommendation,
+        has_recommendation: hasRec,
         user_id:            googleUser.id,
       };
     } catch (err) {
@@ -410,6 +454,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('authUser', JSON.stringify(dbUser));
       localStorage.setItem('user_id', String(dbUser.id));
       localStorage.setItem('currentUser', dbUser.email);
+      localStorage.removeItem('has_recommendation');
+      localStorage.removeItem('career_recommendation');
+      setHasRecommendation(false);
 
       setUser(dbUser);
 
@@ -490,6 +537,9 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('googleUser');
     localStorage.removeItem('user_id');
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('has_recommendation');
+    localStorage.removeItem('career_recommendation');
+    setHasRecommendation(false);
     setUser(null);
     setDashboardData(initialDashboardData);
   };
@@ -497,6 +547,8 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       user,
+      hasRecommendation,
+      setHasRecommendation,
       login,
       loginWithGoogle,
       loginWithGoogleToken,

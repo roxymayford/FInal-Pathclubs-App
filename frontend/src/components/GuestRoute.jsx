@@ -9,13 +9,17 @@ import LoadingScreen from './LoadingScreen';
  * - Jika belum login → render halaman login/register
  */
 const GuestRoute = () => {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, hasRecommendation } = useAuth();
 
   if (isLoading) {
     return <LoadingScreen />;
   }
 
   if (user) {
+    const isDone = Boolean(hasRecommendation || user.has_recommendation);
+    if (!isDone) {
+      return <Navigate to="/career-onboarding" replace />;
+    }
     return <Navigate to="/dashboard" replace />;
   }
 

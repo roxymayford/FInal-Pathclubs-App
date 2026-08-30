@@ -7,6 +7,7 @@ import {
   Bot, Code2, Palette, ShieldCheck, BarChart3, Globe2, Lightbulb, TrendingUp
 } from 'lucide-react';
 import BottomSheetSelector from '../components/BottomSheetSelector';
+import { useAuth } from '../context/AuthContext';
 
 const FLASK_API = import.meta.env.VITE_ML_API_URL || 'http://localhost:5000/api';
 
@@ -111,6 +112,8 @@ export default function CareerOnboarding() {
     }
   };
 
+  const { setHasRecommendation } = useAuth();
+
   // ─── Save Recommendation ─────────────────────────────────────────────────
   const handleSave = async () => {
     if (!predictionResult) return;
@@ -129,7 +132,8 @@ export default function CareerOnboarding() {
         }),
       });
     } catch (_) {
-      // Save to localStorage as fallback
+      // Catch network error gracefully
+    } finally {
       localStorage.setItem('career_recommendation', JSON.stringify({
         top_career:    predictionResult.prediction,
         skills:        selectedSkills,
@@ -137,10 +141,12 @@ export default function CareerOnboarding() {
         probabilities: predictionResult.probabilities,
         saved_at:      new Date().toISOString(),
       }));
+      localStorage.setItem('has_recommendation', 'true');
+      if (setHasRecommendation) setHasRecommendation(true);
     }
 
     setSaveSuccess(true);
-    setTimeout(() => navigate('/dashboard'), 1400);
+    setTimeout(() => navigate('/dashboard', { replace: true }), 1400);
   };
 
   // ─── Skip ────────────────────────────────────────────────────────────────
