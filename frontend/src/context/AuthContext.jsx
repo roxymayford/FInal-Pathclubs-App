@@ -276,14 +276,6 @@ export const AuthProvider = ({ children }) => {
         newData.notifications    = progress.notifications || [];
       }
 
-      const hasRec = Boolean(resData.has_recommendation);
-      setHasRecommendation(hasRec);
-      if (hasRec) {
-        localStorage.setItem('has_recommendation', 'true');
-      } else {
-        localStorage.removeItem('has_recommendation');
-      }
-
       handleSetDashboardData(newData);
       setIsLoading(false);
 
