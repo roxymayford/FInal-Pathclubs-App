@@ -459,8 +459,9 @@ def seed_default_data():
 
 with app.app_context():
     db.create_all()
-    # Add missing columns safely for PostgreSQL/Supabase (IF NOT EXISTS)
-    for col_sql in [
+    # Add ALL missing columns safely for PostgreSQL/Supabase (IF NOT EXISTS)
+    migration_sqls = [
+        # --- users table ---
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(100)",
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255)",
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar TEXT",
@@ -468,14 +469,38 @@ with app.app_context():
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user'",
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_new BOOLEAN DEFAULT TRUE",
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()",
+        # --- user_progress table ---
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS completed_modules TEXT DEFAULT '[]'",
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS completed_quizzes TEXT DEFAULT '[]'",
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS quiz_xp INTEGER DEFAULT 0",
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS daily_target TEXT DEFAULT '{}'",
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS preferences TEXT DEFAULT '{}'",
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS unlocked_badges TEXT DEFAULT '[]'",
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS last_login_date VARCHAR(20)",
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS stats TEXT DEFAULT '[]'",
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS notifications TEXT DEFAULT '[]'",
+        "ALTER TABLE user_progress ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()",
+        # --- materi table ---
         "ALTER TABLE materi ADD COLUMN IF NOT EXISTS careers TEXT DEFAULT '[\"Semua Karir\"]'",
-    ]:
+        "ALTER TABLE materi ADD COLUMN IF NOT EXISTS video_url VARCHAR(500)",
+        "ALTER TABLE materi ADD COLUMN IF NOT EXISTS content TEXT",
+        "ALTER TABLE materi ADD COLUMN IF NOT EXISTS xp_reward INTEGER DEFAULT 50",
+        "ALTER TABLE materi ADD COLUMN IF NOT EXISTS is_locked BOOLEAN DEFAULT FALSE",
+        "ALTER TABLE materi ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()",
+        # --- career_recommendations table ---
+        "ALTER TABLE career_recommendations ADD COLUMN IF NOT EXISTS skills TEXT",
+        "ALTER TABLE career_recommendations ADD COLUMN IF NOT EXISTS interests TEXT",
+        "ALTER TABLE career_recommendations ADD COLUMN IF NOT EXISTS probabilities TEXT",
+        "ALTER TABLE career_recommendations ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()",
+    ]
+    for col_sql in migration_sqls:
         try:
             with db.engine.connect() as conn:
                 conn.execute(db.text(col_sql))
                 conn.commit()
         except Exception as e:
             print(f"[WARN] Column migration skipped: {e}")
+    print("[STARTUP] All column migrations completed.")
     seed_default_data()
 
 # ─── Load ML Model ────────────────────────────────────────────────────────────
@@ -623,70 +648,76 @@ def google_token_auth():
 @app.route('/api/auth/register', methods=['POST'])
 def register():
     """Register a new user with name, email, and password."""
-    data = request.get_json() or {}
-    name = data.get('name', '').strip()
-    email = data.get('email', '').strip().lower()
-    password = data.get('password', '')
+    try:
+        data = request.get_json() or {}
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip().lower()
+        password = data.get('password', '')
 
-    if not email or not password or not name:
-        return jsonify({"error": "Nama lengkap, email, dan kata sandi wajib diisi."}), 400
+        if not email or not password or not name:
+            return jsonify({"error": "Nama lengkap, email, dan kata sandi wajib diisi."}), 400
 
-    if User.query.filter_by(email=email).first():
-        return jsonify({"error": "Email sudah terdaftar. Silakan login."}), 400
+        if User.query.filter_by(email=email).first():
+            return jsonify({"error": "Email sudah terdaftar. Silakan login."}), 400
 
-    password_hash = generate_password_hash(password)
-    user = User(
-        name=name,
-        email=email,
-        password_hash=password_hash,
-        role='user',
-        is_new=True,
-        grade='SMA Kelas 10'
-    )
-    db.session.add(user)
-    db.session.commit()
+        password_hash = generate_password_hash(password)
+        user = User(
+            name=name,
+            email=email,
+            password_hash=password_hash,
+            role='user',
+            is_new=True,
+            grade='SMA Kelas 10'
+        )
+        db.session.add(user)
+        db.session.commit()
 
-    total_materi = Materi.query.count()
-    initial_stats = [
-        {"id": 1, "icon": "Book", "value": str(total_materi), "label": "Materi Tersedia", "iconColorClass": "text-blue-500", "iconBgClass": "bg-blue-50"},
-        {"id": 2, "icon": "GraduationCap", "value": "0", "label": "Modul Selesai", "iconColorClass": "text-emerald-500", "iconBgClass": "bg-emerald-50"},
-        {"id": 3, "icon": "Flame", "value": "1", "label": "Hari Beruntun", "iconColorClass": "text-orange-500", "iconBgClass": "bg-orange-50"},
-        {"id": 4, "icon": "Trophy", "value": "0", "label": "Total XP", "iconColorClass": "text-primary-dark", "iconBgClass": "bg-primary-light/20"}
-    ]
-    initial_notifications = [{
-        "id": int(datetime.utcnow().timestamp() * 1000),
-        "type": "system",
-        "unread": True,
-        "title": "Selamat Datang! 🎉",
-        "time": "Baru saja",
-        "description": f"Halo {name}, selamat bergabung di platform belajar cerdas!",
-        "iconName": "CheckCheck",
-        "iconBg": "bg-indigo-100",
-        "iconColor": "text-indigo-600",
-    }]
+        total_materi = Materi.query.count()
+        initial_stats = [
+            {"id": 1, "icon": "Book", "value": str(total_materi), "label": "Materi Tersedia", "iconColorClass": "text-blue-500", "iconBgClass": "bg-blue-50"},
+            {"id": 2, "icon": "GraduationCap", "value": "0", "label": "Modul Selesai", "iconColorClass": "text-emerald-500", "iconBgClass": "bg-emerald-50"},
+            {"id": 3, "icon": "Flame", "value": "1", "label": "Hari Beruntun", "iconColorClass": "text-orange-500", "iconBgClass": "bg-orange-50"},
+            {"id": 4, "icon": "Trophy", "value": "0", "label": "Total XP", "iconColorClass": "text-primary-dark", "iconBgClass": "bg-primary-light/20"}
+        ]
+        initial_notifications = [{
+            "id": int(datetime.utcnow().timestamp() * 1000),
+            "type": "system",
+            "unread": True,
+            "title": "Selamat Datang! 🎉",
+            "time": "Baru saja",
+            "description": f"Halo {name}, selamat bergabung di platform belajar cerdas!",
+            "iconName": "CheckCheck",
+            "iconBg": "bg-indigo-100",
+            "iconColor": "text-indigo-600",
+        }]
 
-    progress = UserProgress(
-        user_id=user.id,
-        completed_modules="[]",
-        completed_quizzes="[]",
-        quiz_xp=0,
-        daily_target=json.dumps({"targetMinutes": 60, "currentMinutes": 0, "message": "Ayo mulai target belajarmu hari ini!"}),
-        preferences=json.dumps({"learningStyle": "visual"}),
-        unlocked_badges="[]",
-        last_login_date=datetime.utcnow().strftime('%Y-%m-%d'),
-        stats=json.dumps(initial_stats),
-        notifications=json.dumps(initial_notifications)
-    )
-    db.session.add(progress)
-    db.session.commit()
+        progress = UserProgress(
+            user_id=user.id,
+            completed_modules="[]",
+            completed_quizzes="[]",
+            quiz_xp=0,
+            daily_target=json.dumps({"targetMinutes": 60, "currentMinutes": 0, "message": "Ayo mulai target belajarmu hari ini!"}),
+            preferences=json.dumps({"learningStyle": "visual"}),
+            unlocked_badges="[]",
+            last_login_date=datetime.utcnow().strftime('%Y-%m-%d'),
+            stats=json.dumps(initial_stats),
+            notifications=json.dumps(initial_notifications)
+        )
+        db.session.add(progress)
+        db.session.commit()
 
-    return jsonify({
-        "message": "Registrasi berhasil",
-        "user": user.to_dict(),
-        "is_new_user": True,
-        "has_recommendation": False,
-        "progress": progress.to_dict()
-    }), 201
+        return jsonify({
+            "message": "Registrasi berhasil",
+            "user": user.to_dict(),
+            "is_new_user": True,
+            "has_recommendation": False,
+            "progress": progress.to_dict()
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        import traceback
+        print(f"[REGISTER ERROR] {traceback.format_exc()}")
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 
 @app.route('/api/auth/login', methods=['POST'])
