@@ -16,7 +16,7 @@ const GuestRoute = () => {
   }
 
   if (user) {
-    const isDone = Boolean(hasRecommendation || user.has_recommendation);
+    const isDone = user.has_recommendation === true || (user.has_recommendation === undefined && hasRecommendation);
     if (!isDone) {
       return <Navigate to="/career-onboarding" replace />;
     }

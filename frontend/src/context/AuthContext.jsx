@@ -140,6 +140,26 @@ export const AuthProvider = ({ children }) => {
                 }
               }
             } catch (_) {}
+
+            try {
+              const recRes = await fetch(`${FLASK_API}/recommendation/${activeUserId}`);
+              if (recRes.ok) {
+                const recJson = await recRes.json();
+                if (recJson.recommendation && recJson.recommendation.top_career) {
+                  setHasRecommendation(true);
+                  localStorage.setItem('has_recommendation', 'true');
+                  userData.has_recommendation = true;
+                } else {
+                  setHasRecommendation(false);
+                  localStorage.removeItem('has_recommendation');
+                  userData.has_recommendation = false;
+                }
+              } else {
+                userData.has_recommendation = localStorage.getItem('has_recommendation') === 'true';
+              }
+            } catch (_) {
+              userData.has_recommendation = localStorage.getItem('has_recommendation') === 'true';
+            }
           }
 
           setUser(userData);
@@ -171,22 +191,6 @@ export const AuthProvider = ({ children }) => {
             } catch (fetchErr) {
               console.warn('Could not fetch backend progress, using cached data:', fetchErr);
             }
-
-            try {
-              const recRes = await fetch(`${FLASK_API}/recommendation/${activeUserId}`);
-              if (recRes.ok) {
-                const recJson = await recRes.json();
-                if (recJson.recommendation && recJson.recommendation.top_career) {
-                  setHasRecommendation(true);
-                  localStorage.setItem('has_recommendation', 'true');
-                  userData.has_recommendation = true;
-                } else {
-                  setHasRecommendation(false);
-                  localStorage.removeItem('has_recommendation');
-                  userData.has_recommendation = false;
-                }
-              }
-            } catch (_) {}
           }
 
           handleSetDashboardData(newData);
@@ -238,6 +242,15 @@ export const AuthProvider = ({ children }) => {
 
       const dbUser = resData.user;
       const progress = resData.progress;
+      const hasRec = Boolean(resData.has_recommendation);
+
+      dbUser.has_recommendation = hasRec;
+      setHasRecommendation(hasRec);
+      if (hasRec) {
+        localStorage.setItem('has_recommendation', 'true');
+      } else {
+        localStorage.removeItem('has_recommendation');
+      }
 
       localStorage.setItem('authUser', JSON.stringify(dbUser));
       localStorage.setItem('user_id', String(dbUser.id));
@@ -450,6 +463,7 @@ export const AuthProvider = ({ children }) => {
 
       const dbUser = resData.user;
       const progress = resData.progress;
+      dbUser.has_recommendation = false;
 
       localStorage.setItem('authUser', JSON.stringify(dbUser));
       localStorage.setItem('user_id', String(dbUser.id));

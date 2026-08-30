@@ -150,7 +150,11 @@ export default function CareerOnboarding() {
   };
 
   // ─── Skip ────────────────────────────────────────────────────────────────
-  const handleSkip = () => navigate('/dashboard');
+  const handleSkip = () => {
+    localStorage.setItem('has_recommendation', 'true');
+    if (setHasRecommendation) setHasRecommendation(true);
+    navigate('/dashboard');
+  };
 
   const meta = predictionResult ? (careerMeta[predictionResult.prediction] || careerMeta['Software Development']) : null;
 
