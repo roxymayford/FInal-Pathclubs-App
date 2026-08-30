@@ -1,0 +1,9 @@
+flask
+flask-cors
+flask-sqlalchemy
+scikit-learn
+joblib
+numpy
+google-auth
+google-auth-oauthlib
+python-dotenv

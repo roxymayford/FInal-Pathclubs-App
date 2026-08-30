@@ -1,0 +1,33 @@
+# Node
+node_modules/
+dist/
+build/
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python / Flask
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+.env
+*.sqlite3
+
+# Laravel / PHP
+vendor/
+.env
+public/storage
+storage/framework/
+storage/logs/
+Homestead.json
+Homestead.yaml
+auth.json
+
+# OS Files
+.DS_Store
+Thumbs.db
