@@ -459,18 +459,19 @@ def seed_default_data():
 
 with app.app_context():
     db.create_all()
+    # Use IF NOT EXISTS for PostgreSQL compatibility
     for col_sql in [
-        "ALTER TABLE users ADD COLUMN role VARCHAR(20) DEFAULT 'user'",
-        "ALTER TABLE users ADD COLUMN password_hash VARCHAR(255)",
-        "ALTER TABLE users ADD COLUMN grade VARCHAR(100) DEFAULT 'SMA Kelas 10'",
-        "ALTER TABLE materi ADD COLUMN careers TEXT DEFAULT '[\"Semua Karir\"]'"
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user'",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255)",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS grade VARCHAR(100) DEFAULT 'SMA Kelas 10'",
+        "ALTER TABLE materi ADD COLUMN IF NOT EXISTS careers TEXT DEFAULT '[\"Semua Karir\"]'"
     ]:
         try:
             with db.engine.connect() as conn:
                 conn.execute(db.text(col_sql))
                 conn.commit()
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[WARN] Column migration skipped: {e}")
     seed_default_data()
 
 # ─── Load ML Model ────────────────────────────────────────────────────────────
