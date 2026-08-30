@@ -21,7 +21,7 @@ const ProtectedRoute = () => {
     return <Navigate to="/login" replace />;
   }
 
-  const isDone = user.has_recommendation === true || (user.has_recommendation === undefined && hasRecommendation);
+  const isDone = Boolean(hasRecommendation || user.has_recommendation);
   if (!isDone && location.pathname !== '/career-onboarding') {
     return <Navigate to="/career-onboarding" replace />;
   }

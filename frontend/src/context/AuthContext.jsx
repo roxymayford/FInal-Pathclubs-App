@@ -13,6 +13,17 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading]     = useState(true);
   const saveTimeoutRef                = useRef(null);
 
+  const handleSetHasRecommendation = (val) => {
+    setHasRecommendation(val);
+    if (val) {
+      localStorage.setItem('has_recommendation', 'true');
+    } else {
+      localStorage.removeItem('has_recommendation');
+      localStorage.removeItem('career_recommendation');
+    }
+    setUser(prev => prev ? { ...prev, has_recommendation: val } : prev);
+  };
+
   // ─── Sync stats helper ────────────────────────────────────────────────────
   const handleSetDashboardData = (newData) => {
     if (!newData) {
@@ -553,8 +564,9 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       user,
+      setUser,
       hasRecommendation,
-      setHasRecommendation,
+      setHasRecommendation: handleSetHasRecommendation,
       login,
       loginWithGoogle,
       loginWithGoogleToken,
