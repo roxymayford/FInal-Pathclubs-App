@@ -459,12 +459,16 @@ def seed_default_data():
 
 with app.app_context():
     db.create_all()
-    # Use IF NOT EXISTS for PostgreSQL compatibility
+    # Add missing columns safely for PostgreSQL/Supabase (IF NOT EXISTS)
     for col_sql in [
-        "ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user'",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(100)",
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255)",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar TEXT",
         "ALTER TABLE users ADD COLUMN IF NOT EXISTS grade VARCHAR(100) DEFAULT 'SMA Kelas 10'",
-        "ALTER TABLE materi ADD COLUMN IF NOT EXISTS careers TEXT DEFAULT '[\"Semua Karir\"]'"
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user'",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS is_new BOOLEAN DEFAULT TRUE",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()",
+        "ALTER TABLE materi ADD COLUMN IF NOT EXISTS careers TEXT DEFAULT '[\"Semua Karir\"]'",
     ]:
         try:
             with db.engine.connect() as conn:
