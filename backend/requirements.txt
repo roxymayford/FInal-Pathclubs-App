@@ -7,5 +7,6 @@ numpy
 google-auth
 google-auth-oauthlib
 python-dotenv
+psycopg2-binary
 
 gunicorn

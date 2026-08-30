@@ -1,0 +1,10 @@
+.env
+vendor/
+node_modules/
+.git
+.gitignore
+*.log
+storage/logs/*.log
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
