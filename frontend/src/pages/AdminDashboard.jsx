@@ -528,7 +528,7 @@ const AdminDashboard = () => {
 
           <div className="mt-6 pt-4 border-t border-slate-700/60 text-center">
             <p className="text-[11px] text-slate-500">
-              Akses khusus instruktur & administrator Project ISC.
+              Akses khusus instruktur & administrator Pathclub.
             </p>
           </div>
 

@@ -56,7 +56,7 @@ const LoadingScreen = ({
         {/* Bottom Tag */}
         <div className="mt-5 inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 rounded-full text-[11px] font-bold text-indigo-600">
           <span className="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span>
-          Project ISC
+          Pathclub
         </div>
       </div>
     </div>

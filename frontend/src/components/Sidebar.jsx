@@ -81,7 +81,7 @@ const Sidebar = ({ user: propUser }) => {
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-dark to-primary-light flex items-center justify-center text-white shadow-xs shrink-0">
                 <Sparkles size={18} />
               </div>
-              <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary-dark to-primary-light truncate">Project ISC</span>
+              <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary-dark to-primary-light truncate">Pathclub</span>
             </div>
             <button
               onClick={toggleDesktopSidebar}
@@ -174,7 +174,7 @@ const Sidebar = ({ user: propUser }) => {
           </button>
           <div className="flex items-center gap-1.5">
             <span className="font-black text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary-dark to-primary-light">
-              Project ISC
+              Pathclub
             </span>
           </div>
         </div>
@@ -220,7 +220,7 @@ const Sidebar = ({ user: propUser }) => {
                   <Sparkles size={16} />
                 </div>
                 <span className="font-black text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary-dark to-primary-light">
-                  Project ISC
+                  Pathclub
                 </span>
               </div>
               <button 
