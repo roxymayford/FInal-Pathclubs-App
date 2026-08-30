@@ -54,7 +54,9 @@ const Register = () => {
     setIsSubmitting(false);
 
     if (result && result.success) {
-      navigate('/career-onboarding');
+      // Force full reload to avoid GuestRoute race condition
+      window.location.href = '/career-onboarding';
+      return;
     } else {
       setError(result?.error || 'Email sudah terdaftar atau registrasi gagal.');
     }
@@ -80,10 +82,11 @@ const Register = () => {
 
         if (result && result.success) {
           if (result.is_new_user || !result.has_recommendation) {
-            navigate('/career-onboarding');
+            window.location.href = '/career-onboarding';
           } else {
-            navigate('/dashboard');
+            window.location.href = '/dashboard';
           }
+          return;
         } else {
           setError(result?.error || 'Pendaftaran dengan Google gagal');
         }

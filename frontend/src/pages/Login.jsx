@@ -51,10 +51,11 @@ const Login = () => {
 
     if (result && result.success) {
       if (result.is_new_user || !result.has_recommendation) {
-        navigate('/career-onboarding');
+        window.location.href = '/career-onboarding';
       } else {
-        navigate('/dashboard');
+        window.location.href = '/dashboard';
       }
+      return;
     } else {
       setError(result?.error || 'Kombinasi email dan kata sandi salah.');
     }
@@ -84,10 +85,11 @@ const Login = () => {
 
         if (result && result.success) {
           if (result.is_new_user || !result.has_recommendation) {
-            navigate('/career-onboarding');
+            window.location.href = '/career-onboarding';
           } else {
-            navigate('/dashboard');
+            window.location.href = '/dashboard';
           }
+          return;
         } else {
           setError(result?.error || 'Autentikasi akun Google gagal.');
         }
