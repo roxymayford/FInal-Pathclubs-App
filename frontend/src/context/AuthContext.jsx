@@ -312,12 +312,19 @@ export const AuthProvider = ({ children }) => {
       const { user: googleUser, is_new_user, has_recommendation, progress } = result;
 
       // Persist Google session
-      localStorage.setItem('authUser', JSON.stringify(googleUser));
-      localStorage.setItem('googleUser', JSON.stringify(googleUser));
-      localStorage.setItem('user_id', String(googleUser.id));
+      const hasRec = Boolean(has_recommendation);
+      googleUser.has_recommendation = hasRec;
+      setHasRecommendation(hasRec);
+      if (hasRec) {
+        localStorage.setItem('has_recommendation', 'true');
+      } else {
+        localStorage.removeItem('has_recommendation');
+        localStorage.removeItem('career_recommendation');
+      }
 
       setUser({
         ...googleUser,
+        has_recommendation: hasRec,
         isGoogle: true,
       });
 
@@ -337,15 +344,6 @@ export const AuthProvider = ({ children }) => {
         newData.lastLoginDate    = progress.lastLoginDate || null;
         newData.stats            = progress.stats || newData.stats;
         newData.notifications    = progress.notifications || [];
-      }
-
-      const hasRec = Boolean(has_recommendation);
-      setHasRecommendation(hasRec);
-      if (hasRec) {
-        localStorage.setItem('has_recommendation', 'true');
-      } else {
-        localStorage.removeItem('has_recommendation');
-        localStorage.removeItem('career_recommendation');
       }
 
       handleSetDashboardData(newData);
@@ -391,6 +389,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user_id', String(googleUser.id));
 
       const hasRec = Boolean(has_recommendation);
+      googleUser.has_recommendation = hasRec;
       setHasRecommendation(hasRec);
       if (hasRec) {
         localStorage.setItem('has_recommendation', 'true');
@@ -401,6 +400,7 @@ export const AuthProvider = ({ children }) => {
 
       setUser({
         ...googleUser,
+        has_recommendation: hasRec,
         isGoogle: true,
       });
 
