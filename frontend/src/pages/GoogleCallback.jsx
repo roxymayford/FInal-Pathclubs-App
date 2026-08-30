@@ -1,38 +1,57 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+const FLASK_API = import.meta.env.VITE_ML_API_URL || 'http://localhost:5000/api';
+
 const GoogleCallback = () => {
-  const navigate = useNavigate();
   const { login } = useAuth();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const error  = params.get('error');
-    const token  = params.get('token');
-    const userId = params.get('user_id');
-    const email  = params.get('email');
-    const name   = params.get('name');
+    const handleCallback = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const error  = params.get('error');
+      const token  = params.get('token');
+      const userId = params.get('user_id');
+      const email  = params.get('email');
+      const name   = params.get('name');
 
-    if (error || !token) {
-      navigate('/login?error=google_failed');
-      return;
-    }
+      if (error || !token) {
+        window.location.href = '/login?error=google_failed';
+        return;
+      }
 
-    // Simpan data ke localStorage untuk API
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('user_id', userId);
+      // Simpan data ke localStorage untuk API
+      localStorage.setItem('auth_token', token);
+      localStorage.setItem('user_id', userId);
 
-    // Simpan sesi Google agar AuthContext bisa merestore-nya
-    localStorage.setItem('googleUser', JSON.stringify({
-      id: userId,
-      email: email,
-      name: name,
-      isGoogle: true
-    }));
+      // Simpan sesi Google agar AuthContext bisa merestore-nya
+      localStorage.setItem('googleUser', JSON.stringify({
+        id: userId,
+        email: email,
+        name: name,
+        isGoogle: true
+      }));
 
-    // Paksa reload halaman ke dashboard agar AuthContext membaca localStorage baru
-    window.location.href = '/dashboard';
+      // Cek apakah user sudah punya rekomendasi karir
+      let hasRec = false;
+      try {
+        const res = await fetch(`${FLASK_API}/recommendation/${userId}`);
+        if (res.ok) {
+          const data = await res.json();
+          hasRec = Boolean(data.recommendation && data.recommendation.top_career);
+        }
+      } catch (_) {}
+
+      if (hasRec) {
+        localStorage.setItem('has_recommendation', 'true');
+        window.location.href = '/dashboard';
+      } else {
+        localStorage.removeItem('has_recommendation');
+        window.location.href = '/career-onboarding';
+      }
+    };
+
+    handleCallback();
   }, []);
 
   return (
