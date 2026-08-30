@@ -180,8 +180,8 @@ const Progress = () => {
             {/* Bars */}
             <div className="w-full flex justify-between items-end h-[calc(100%-2rem)] z-10 px-4 md:px-10">
               {barChartData.map((item, index) => {
-                // Calculate height percentage based on max value 7
-                const heightPercentage = (item.value / 7) * 100;
+                // Calculate height percentage based on max value 7, safely capped to 100%
+                const heightPercentage = Math.min(100, Math.max(0, (item.value / 7) * 100));
                 return (
                   <div key={index} className="flex flex-col items-center gap-3 w-12 md:w-16 h-full justify-end">
                     <div 

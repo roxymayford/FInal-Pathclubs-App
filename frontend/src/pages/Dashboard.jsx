@@ -207,11 +207,13 @@ const Dashboard = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                 {recommendationsToRender.map((rec, index) => (
                   <RecommendationCard 
-                    key={index} 
+                    key={rec.id || index} 
+                    id={rec.id}
                     title={rec.title} 
                     level={rec.level} 
                     duration={rec.duration} 
                     bgClass={rec.bgClass} 
+                    type={rec.type}
                   />
                 ))}
               </div>

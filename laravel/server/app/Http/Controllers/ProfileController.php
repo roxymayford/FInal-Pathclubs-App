@@ -26,20 +26,37 @@ class ProfileController extends Controller
         );
 
         try {
-            $mlResponse = Http::timeout(3)->post('http://127.0.0.1:5000/predict', [
-                'jurusan' => $request->jurusan,
-                'semester' => $request->semester,
-                'peminatan' => $request->peminatan,
-                'level_kemampuan' => $request->level_kemampuan,
+            $mlBaseUrl = env('ML_API_URL', 'http://127.0.0.1:5000/api');
+            $skillsMap = [
+                'Matematika' => ['Python', 'Data Analysis', 'SQL'],
+                'IPA / Sains' => ['Python', 'Machine Learning', 'Data Analysis'],
+                'IPS / Sosial' => ['Product Management', 'Data Analysis', 'SQL'],
+                'Bahasa Indonesia' => ['UI/UX Design', 'Product Management', 'React'],
+            ];
+            $interestsMap = [
+                'Visual (Video/Animasi)' => ['UI/UX Design', 'Design'],
+                'Auditori (Penjelasan/Podcast)' => ['Product Management', 'Web Development'],
+                'Baca-Tulis (Catatan/Ringkasan)' => ['Data Science', 'Artificial Intelligence'],
+                'Kinestetik (Praktik/Latihan)' => ['Web Development', 'Software Development'],
+            ];
+
+            $selectedSkills = $skillsMap[$request->jurusan] ?? ['Python', 'SQL', 'Data Analysis'];
+            $selectedInterests = $interestsMap[$request->peminatan] ?? ['Software Development', 'Web Development'];
+
+            $mlResponse = Http::timeout(4)->post(rtrim($mlBaseUrl, '/') . '/predict', [
+                'skills' => $selectedSkills,
+                'interests' => $selectedInterests,
             ]);
 
             $hasilAI = $mlResponse->successful() ? $mlResponse->json() : [
                 'status' => 'warning',
+                'prediction' => $request->peminatan,
                 'rekomendasi' => $request->peminatan
             ];
         } catch (\Exception $e) {
             $hasilAI = [
                 'status' => 'offline',
+                'prediction' => $request->peminatan,
                 'rekomendasi' => $request->peminatan
             ];
         }
