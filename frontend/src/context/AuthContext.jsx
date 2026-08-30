@@ -171,7 +171,7 @@ export const AuthProvider = ({ children }) => {
             } catch (fetchErr) {
               console.warn('Could not fetch backend progress, using cached data:', fetchErr);
             }
-          if (activeUserId) {
+
             try {
               const recRes = await fetch(`${FLASK_API}/recommendation/${activeUserId}`);
               if (recRes.ok) {
