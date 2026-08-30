@@ -143,7 +143,7 @@ export default function Rekomendasi() {
   };
 
   return (
-    <div className="flex h-screen bg-[#f3f4f6] font-['Inter'] overflow-hidden">
+    <div className="flex h-screen bg-[#f3f4f6] font-sans overflow-hidden">
       {/* Sidebar - Using the provided user object structure */}
       <Sidebar user={user || dashboardData?.user} />
 
