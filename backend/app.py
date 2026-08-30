@@ -474,8 +474,8 @@ with app.app_context():
     seed_default_data()
 
 # ─── Load ML Model ────────────────────────────────────────────────────────────
-MODEL_PATH    = os.path.join(BASE_DIR, '..', 'model_rekomendasi_karir.pkl')
-FEATURES_PATH = os.path.join(BASE_DIR, '..', 'kolom_fitur.pkl')
+MODEL_PATH    = os.path.join(BASE_DIR, 'model_rekomendasi_karir.pkl')
+FEATURES_PATH = os.path.join(BASE_DIR, 'kolom_fitur.pkl')
 
 try:
     model = joblib.load(MODEL_PATH)
