@@ -157,7 +157,7 @@ export default function CareerOnboarding() {
           <div className="w-8 h-8 bg-gradient-to-br from-[#4232c2] to-[#6366f1] rounded-xl flex items-center justify-center">
             <Sparkles size={16} className="text-white" />
           </div>
-          <span className="font-bold text-gray-900 text-sm">Learning Path</span>
+          <span className="font-bold text-gray-900 text-sm">Pathclub</span>
         </div>
 
         {/* Step dots */}
