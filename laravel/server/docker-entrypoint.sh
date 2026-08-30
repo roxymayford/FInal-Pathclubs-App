@@ -11,10 +11,6 @@ mkdir -p /var/www/html/storage/framework/sessions \
 
 chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Dynamic PORT support (Railway injects $PORT)
-PORT_TO_USE="${PORT:-8000}"
-sed -i "s/listen [0-9]*;/listen ${PORT_TO_USE};/g" /etc/nginx/http.d/default.conf
-
 # Cache configs and run migrations if enabled
 if [ "$APP_ENV" = "production" ]; then
     php artisan config:clear || true
@@ -30,5 +26,5 @@ fi
 echo "Starting PHP-FPM on port 9000..."
 php-fpm -D
 
-echo "Starting Nginx on port ${PORT_TO_USE}..."
+echo "Starting Nginx on ports 8000, 8080, 80..."
 exec nginx -g "daemon off;"
