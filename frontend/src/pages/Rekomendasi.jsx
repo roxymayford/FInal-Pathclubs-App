@@ -153,13 +153,13 @@ export default function Rekomendasi() {
           
           {/* Header */}
           <div className="mb-6 md:mb-10">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
               Rekomendasi Karir AI
               <div className="bg-indigo-100 p-2 rounded-xl">
                 <Sparkles className="text-indigo-600" size={24} />
               </div>
             </h1>
-            <p className="text-gray-500 mt-2 text-sm sm:text-base">
+            <p className="text-gray-500 mt-2 text-sm sm:text-base font-medium">
               Temukan jalur karir yang cocok berdasarkan keahlian dan minat kamu
             </p>
           </div>
@@ -171,13 +171,13 @@ export default function Rekomendasi() {
               {/* Skills Card */}
               <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
                 <div className="mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">Keahlian</h2>
-                  <p className="text-sm text-gray-500">Pilih keahlian yang kamu miliki</p>
+                  <h2 className="text-xl font-bold text-gray-900 tracking-tight">Keahlian</h2>
+                  <p className="text-sm font-medium text-gray-500">Pilih keahlian yang kamu miliki</p>
                 </div>
                 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {selectedSkills.map(skill => (
-                    <div key={skill} className="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg text-sm font-medium border border-indigo-100 animate-in fade-in zoom-in duration-200">
+                    <div key={skill} className="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg text-sm font-semibold border border-indigo-100 animate-in fade-in zoom-in duration-200">
                       {skill}
                       <button onClick={() => removeSkill(skill)} className="hover:bg-indigo-200 rounded-full p-0.5 transition-colors">
                         <X size={14} />
@@ -188,7 +188,7 @@ export default function Rekomendasi() {
                 
                 <button 
                   onClick={() => setIsSkillsSheetOpen(true)}
-                  className="w-full py-3 flex items-center justify-center gap-2 text-indigo-600 bg-indigo-50/50 hover:bg-indigo-100/50 border border-dashed border-indigo-200 rounded-xl font-medium transition-colors"
+                  className="w-full py-3 flex items-center justify-center gap-2 text-indigo-600 bg-indigo-50/50 hover:bg-indigo-100/50 border border-dashed border-indigo-200 rounded-xl font-semibold transition-colors"
                 >
                   <Plus size={18} />
                   Tambahkan Keahlian
@@ -198,8 +198,8 @@ export default function Rekomendasi() {
               {/* Interests Card */}
               <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
                 <div className="mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">Minat</h2>
-                  <p className="text-sm text-gray-500">Apa yang kamu minati?</p>
+                  <h2 className="text-xl font-bold text-gray-900 tracking-tight">Minat</h2>
+                  <p className="text-sm font-medium text-gray-500">Apa yang kamu minati?</p>
                 </div>
                 
                 <div className="flex flex-wrap gap-2 mb-4">
