@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { LogOut, AlertTriangle, CheckCircle2, Loader2, Sparkles, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logoImg from '../assets/logo.png';
 
 const LogoutModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -115,7 +116,7 @@ const LogoutModal = ({ isOpen, onClose }) => {
               <>
                 <div className="relative flex items-center justify-center mb-6">
                   <div className="w-16 h-16 rounded-full border-4 border-indigo-100 border-t-[#4f46e5] animate-spin"></div>
-                  <Sparkles size={22} className="text-[#4f46e5] absolute animate-pulse" />
+                  <img src={logoImg} alt="Pathclub" className="w-8 h-8 object-contain rounded-lg absolute animate-pulse" />
                 </div>
                 <h4 className="text-lg font-black text-gray-900 mb-1 tracking-tight">
                   Menyimpan Sesi Belajar...

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
+import logoImg from '../assets/logo.png';
 
 const LoadingScreen = ({ 
   message = "Memuat data...", 
@@ -11,7 +11,7 @@ const LoadingScreen = ({
       <div className="flex flex-col items-center justify-center p-8 gap-3">
         <div className="relative flex items-center justify-center">
           <div className="w-12 h-12 rounded-full border-3 border-indigo-100 border-t-indigo-600 animate-spin"></div>
-          <Sparkles size={16} className="text-indigo-600 absolute animate-pulse" />
+          <img src={logoImg} alt="Pathclub" className="w-6 h-6 object-contain rounded-md absolute animate-pulse" />
         </div>
         <p className="text-sm font-semibold text-gray-600 animate-pulse">{message}</p>
       </div>
@@ -35,8 +35,8 @@ const LoadingScreen = ({
           <div className="w-20 h-20 rounded-full border-4 border-transparent border-t-indigo-600 border-r-purple-500 animate-spin"></div>
           
           {/* Inner badge */}
-          <div className="absolute w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 shadow-md flex items-center justify-center text-white">
-            <Sparkles size={26} className="animate-bounce" />
+          <div className="absolute w-14 h-14 rounded-2xl bg-white shadow-md border border-indigo-50 flex items-center justify-center overflow-hidden p-1.5">
+            <img src={logoImg} alt="Pathclub" className="w-full h-full object-contain rounded-xl animate-pulse" />
           </div>
         </div>
 

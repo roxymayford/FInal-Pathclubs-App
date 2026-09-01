@@ -21,6 +21,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSidebar } from '../context/SidebarContext';
 import LogoutModal from './LogoutModal';
+import logoImg from '../assets/logo.png';
 
 const Sidebar = ({ user: propUser }) => {
   const location = useLocation();
@@ -78,9 +79,7 @@ const Sidebar = ({ user: propUser }) => {
         <div className={`p-6 min-w-[16rem] transition-opacity duration-200 ${isDesktopCollapsed ? 'opacity-0' : 'opacity-100'}`}>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-dark to-primary-light flex items-center justify-center text-white shadow-xs shrink-0">
-                <Sparkles size={18} />
-              </div>
+              <img src={logoImg} alt="Pathclub" className="w-9 h-9 rounded-xl object-contain shadow-xs shrink-0" />
               <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary-dark to-primary-light truncate">Pathclub</span>
             </div>
             <button
@@ -172,7 +171,8 @@ const Sidebar = ({ user: propUser }) => {
           >
             <Menu size={22} />
           </button>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
+            <img src={logoImg} alt="Pathclub" className="w-7 h-7 rounded-lg object-contain shrink-0" />
             <span className="font-black text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary-dark to-primary-light">
               Pathclub
             </span>
@@ -216,9 +216,7 @@ const Sidebar = ({ user: propUser }) => {
             {/* Drawer Header */}
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-dark to-primary-light flex items-center justify-center text-white shadow-xs">
-                  <Sparkles size={16} />
-                </div>
+                <img src={logoImg} alt="Pathclub" className="w-8 h-8 rounded-lg object-contain shadow-xs shrink-0" />
                 <span className="font-black text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary-dark to-primary-light">
                   Pathclub
                 </span>

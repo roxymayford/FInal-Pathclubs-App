@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import BottomSheetSelector from '../components/BottomSheetSelector';
 import { useAuth } from '../context/AuthContext';
+import logoImg from '../assets/logo.png';
 
 const FLASK_API = import.meta.env.VITE_ML_API_URL || 'http://localhost:5000/api';
 
@@ -163,11 +164,9 @@ export default function CareerOnboarding() {
 
       {/* ── Top Bar ── */}
       <div className="flex items-center justify-between px-6 py-5 max-w-4xl mx-auto w-full">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#4232c2] to-[#6366f1] rounded-xl flex items-center justify-center">
-            <Sparkles size={16} className="text-white" />
-          </div>
-          <span className="font-bold text-gray-900 text-sm">Pathclub</span>
+        <div className="flex items-center gap-2.5">
+          <img src={logoImg} alt="Pathclub" className="w-8 h-8 rounded-xl object-contain shadow-xs shrink-0" />
+          <span className="font-bold text-gray-900 text-base">Pathclub</span>
         </div>
 
         {/* Step dots */}

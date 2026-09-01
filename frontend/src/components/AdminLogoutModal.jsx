@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LogOut, CheckCircle2, Sparkles, X, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logoImg from '../assets/logo.png';
 
 const AdminLogoutModal = ({ isOpen, onClose, onLogout }) => {
   const navigate = useNavigate();
@@ -106,7 +107,7 @@ const AdminLogoutModal = ({ isOpen, onClose, onLogout }) => {
               <>
                 <div className="relative flex items-center justify-center mb-6">
                   <div className="w-16 h-16 rounded-full border-4 border-indigo-100 border-t-[#4f46e5] animate-spin"></div>
-                  <Sparkles size={22} className="text-[#4f46e5] absolute animate-pulse" />
+                  <img src={logoImg} alt="Pathclub" className="w-8 h-8 object-contain rounded-lg absolute animate-pulse" />
                 </div>
                 <h4 className="text-lg font-black text-gray-900 mb-1 tracking-tight">
                   Mengakhiri Sesi Admin...
